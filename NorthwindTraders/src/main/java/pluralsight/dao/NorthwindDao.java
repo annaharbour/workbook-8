@@ -16,11 +16,11 @@ public class NorthwindDao {
         String query = "SELECT * FROM products";
 
         try (Connection conn = NorthwindConfig.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()) {
+             PreparedStatement preparedStatement = conn.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
-                String id = resultSet.getString("ProductID");
+                int id = Integer.parseInt(resultSet.getString("ProductID"));
                 String name = resultSet.getString("ProductName");
                 double price = resultSet.getDouble("UnitPrice");
                 int stock = resultSet.getInt("UnitsInStock");
@@ -37,8 +37,8 @@ public class NorthwindDao {
         String query = "SELECT * FROM customers";
 
         try (Connection conn = NorthwindConfig.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet resultSet = stmt.executeQuery()) {
+             PreparedStatement preparedStatement = conn.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
                 String companyName = resultSet.getString("CompanyName");

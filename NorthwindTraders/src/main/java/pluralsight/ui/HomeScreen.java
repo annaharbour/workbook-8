@@ -1,12 +1,32 @@
 package pluralsight.ui;
 
-public class HomeScreen {
-    public void display(){
-        System.out.println("What would you like to do?\n\t1) Display all products\n\t2) Display all customers\n\t3) " +
-                "Exit\nSelect an option:");
+import pluralsight.dao.NorthwindDao;
+
+import java.util.Scanner;
+
+public class HomeScreen implements ScreenState {
+    @Override
+    public void display(NorthwindDao dao) {
+        System.out.println("""
+                What would you like to do?
+                \t1) Display all products
+                \t2) Display all customers
+                \t3) \
+                Exit
+                Select an option:""");
     }
 
-    public void handleInput(){
-
+    @Override
+    public ScreenState handleInput(Scanner scanner) {
+        String input = scanner.nextLine();
+        return switch (input) {
+            case "1" -> new ProductsScreen();
+            case "2" -> new CustomersScreen();
+            case "3" -> null;
+            default -> {
+                System.out.println("Invalid input. Try again");
+                yield this;
+            }
+        };
     }
 }

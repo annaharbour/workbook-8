@@ -17,13 +17,5 @@ public class Customer {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Company Name: ").append(companyName);
-        sb.append("\nContact Name:\t").append(contactName);
-        sb.append("\nCity:\t").append(city);
-        sb.append("\nCountry:\t").append(country);
-        sb.append("\nPhone:\t").append(phone);
-        sb.append("\n-------------------");
-        return sb.toString();
-    }
+        return String.format("\n%-40s%-40s%-40s%-40s%-40s", companyName, contactName, city, country, phone);}
 }

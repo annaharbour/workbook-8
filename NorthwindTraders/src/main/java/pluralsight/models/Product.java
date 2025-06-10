@@ -1,28 +1,23 @@
 package pluralsight.models;
 
 public class Product {
-    private String productId;
+    private int productId;
     private String productName;
     private double price;
-    private int inStock;
+    private int unitsInStock;
 
-    public Product(String productId, String productName, double price, int inStock) {
+    public Product(int productId, String productName, double price, int unitsInStock) {
         this.productId = productId;
         this.productName = productName;
         this.price = price;
-        this.inStock = inStock;
+        this.unitsInStock = unitsInStock;
     }
 
 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("ProductId: ").append(productId);
-        sb.append("\nName:\t").append(productName);
-        sb.append("\nPrice:\t").append(String.format("$%.2f", price));
-        sb.append("\nStock:\t").append(inStock);
-        sb.append("\n-------------------");
-        return sb.toString();
+        return String.format("%-4d %-40s %7.2f %6d%n--------------------------------------------------------------",
+                productId, productName, price, unitsInStock);
     }
 }
