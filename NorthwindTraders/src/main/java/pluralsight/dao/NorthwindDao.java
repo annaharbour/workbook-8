@@ -1,5 +1,6 @@
 package pluralsight.dao;
 
+import pluralsight.models.Category;
 import pluralsight.models.Customer;
 import pluralsight.models.Product;
 
@@ -11,28 +12,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NorthwindDao {
-    public List<Product> getAllProducts() throws SQLException {
+    public List<Product> getAllProducts(String categoryId) throws SQLException {
         List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM products";
+        String query = categoryId == null ? "SELECT * FROM products" : "SELECT * FROM products WHERE CategoryID = ?";
 
         try (Connection conn = NorthwindConfig.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            if (categoryId != null) {
+                preparedStatement.setInt(1, Integer.parseInt(categoryId));
+            }
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = Integer.parseInt(resultSet.getString("ProductID"));
+                    String name = resultSet.getString("ProductName");
+                    double price = resultSet.getDouble("UnitPrice");
+                    int stock = resultSet.getInt("UnitsInStock");
 
-            while (resultSet.next()) {
-                int id = Integer.parseInt(resultSet.getString("ProductID"));
-                String name = resultSet.getString("ProductName");
-                double price = resultSet.getDouble("UnitPrice");
-                int stock = resultSet.getInt("UnitsInStock");
-
-                products.add(new Product(id, name, price, stock));
+                    products.add(new Product(id, name, price, stock));
+                }
             }
         }
-
         return products;
     }
 
-    public List<Customer> getAllCustomers() throws SQLException{
+    public List<Customer> getAllCustomers() throws SQLException {
         List<Customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customers";
 
@@ -51,6 +54,47 @@ public class NorthwindDao {
         }
 
         return customers;
+    }
+
+    public List<Category> getAllCategories() throws SQLException {
+        List<Category> categories = new ArrayList<>();
+        String query = "SELECT * FROM categories";
+
+        try (Connection conn = NorthwindConfig.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = Integer.parseInt(resultSet.getString("CategoryID"));
+                String categoryName = resultSet.getString("CategoryName");
+
+                categories.add(new Category(id, categoryName));
+            }
+        }
+
+        return categories;
+    }
+
+    public List<Product> getCategoryProducts(int categoryId) throws SQLException {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM products WHERE products.CategoryId = ?";
+
+        try (Connection conn = NorthwindConfig.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, categoryId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = Integer.parseInt(resultSet.getString("ProductID"));
+                    String name = resultSet.getString("ProductName");
+                    double price = resultSet.getDouble("UnitPrice");
+                    int stock = resultSet.getInt("UnitsInStock");
+
+                    products.add(new Product(id, name, price, stock));
+                }
+            }
+        }
+
+        return products;
     }
 
 }
