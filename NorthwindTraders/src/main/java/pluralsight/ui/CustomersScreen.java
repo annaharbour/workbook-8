@@ -25,6 +25,6 @@ public class CustomersScreen implements ScreenState {
 
     @Override
     public ScreenState handleInput(Scanner scanner) {
-        return null;
+        return new HomeScreen();
     }
 }

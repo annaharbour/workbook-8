@@ -1,15 +1,20 @@
 package pluralsight.dao;
-
+import org.apache.commons.dbcp2.BasicDataSource;
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class NorthwindConfig {
-    private static final String dbUrl = System.getenv("DB_URL");
-    private static final String dbUser = System.getenv("DB_USER");
-    private static final String dbPassword = System.getenv("DB_PASSWORD");
+    private static final BasicDataSource dataSource = new BasicDataSource();
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+        dataSource.setUrl(System.getenv("DB_URL"));
+        dataSource.setUsername(System.getenv("DB_USER"));
+        dataSource.setPassword(System.getenv("DB_PASSWORD"));
+        return dataSource.getConnection();
+    }
+
+    public static DataSource getDataSource() {
+        return dataSource;
     }
 }
