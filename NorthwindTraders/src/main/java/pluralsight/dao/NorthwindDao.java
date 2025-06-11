@@ -31,6 +31,8 @@ public class NorthwindDao {
                     products.add(new Product(id, name, price, stock));
                 }
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return products;
     }
@@ -51,6 +53,8 @@ public class NorthwindDao {
                 String phone = resultSet.getString("Phone");
                 customers.add(new Customer(contactName, companyName, city, country, phone));
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
 
         return customers;
@@ -70,6 +74,8 @@ public class NorthwindDao {
 
                 categories.add(new Category(id, categoryName));
             }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
 
         return categories;
@@ -92,7 +98,8 @@ public class NorthwindDao {
                     products.add(new Product(id, name, price, stock));
                 }
             }
-        }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());        }
 
         return products;
     }

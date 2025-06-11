@@ -16,7 +16,7 @@ public class ProductsScreen implements ScreenState {
                             "%8s%n--------------------------------------------------------------",
                     "Id", "Product", "Price", "Stock");
             products.forEach(System.out::println);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Error fetching products: " + e.getMessage());
         }
     }

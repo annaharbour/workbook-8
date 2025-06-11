@@ -16,7 +16,7 @@ public class CategoryScreen implements ScreenState {
             System.out.printf("\n%-20s %-20s\n===========================================\n",
                     "Id", "Company");
             categories.forEach(System.out::println);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Error fetching products: " + e.getMessage());
         }
     }

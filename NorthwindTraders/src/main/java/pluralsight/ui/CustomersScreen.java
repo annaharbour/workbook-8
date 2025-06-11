@@ -17,7 +17,7 @@ public class CustomersScreen implements ScreenState {
                     "\n" +
                             "=========================================================================================================================================================================================================");
             customers.forEach(System.out::println);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println("Error fetching customers: " + e.getMessage());
         }
     }
