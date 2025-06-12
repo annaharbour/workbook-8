@@ -42,9 +42,29 @@ public class NorthwindDao {
         String query = "INSERT INTO products (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, " +
                 "UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) " +
                 "VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?)";
-
+//
+//        try (Connection conn = DataManager.getConnection();
+//             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+//            preparedStatement.setString(1, productName);
+//            preparedStatement.setObject(2, categoryId); // Allows null for CategoryID
+//            preparedStatement.setString(3, quantityPerUnit);
+//            preparedStatement.setObject(4, unitPrice); // Allows null for UnitPrice
+//            preparedStatement.setObject(5, unitsInStock); // Allows null for UnitsInStock
+//            preparedStatement.setObject(6, unitsOnOrder); // Allows null for UnitsOnOrder
+//            preparedStatement.setObject(7, reorderLevel); // Allows null for ReorderLevel
+//            preparedStatement.setBoolean(8, discontinued);
+//
+//            int rowsInserted = preparedStatement.executeUpdate();
+//            if (rowsInserted == 0) {
+//                System.out.println("Failed to insert the product.");
+//            }
+//        } catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
         try (Connection conn = DataManager.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+             PreparedStatement preparedStatement = conn.prepareStatement(query,
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, productName);
             preparedStatement.setObject(2, categoryId); // Allows null for CategoryID
             preparedStatement.setString(3, quantityPerUnit);
@@ -57,6 +77,15 @@ public class NorthwindDao {
             int rowsInserted = preparedStatement.executeUpdate();
             if (rowsInserted == 0) {
                 System.out.println("Failed to insert the product.");
+            } else {
+                try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int generatedId = generatedKeys.getInt(1);
+                        System.out.println("Inserted product with ID: " + generatedId);
+                    } else {
+                        System.out.println("No ID obtained.");
+                    }
+                }
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
