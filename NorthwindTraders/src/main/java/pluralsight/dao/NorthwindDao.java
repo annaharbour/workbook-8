@@ -37,6 +37,32 @@ public class NorthwindDao {
         return products;
     }
 
+    public void createProduct(String productName, Integer categoryId, String quantityPerUnit, Double unitPrice,
+                              Integer unitsInStock, Integer unitsOnOrder, Integer reorderLevel, boolean discontinued) {
+        String query = "INSERT INTO products (ProductName, SupplierID, CategoryID, QuantityPerUnit, UnitPrice, " +
+                "UnitsInStock, UnitsOnOrder, ReorderLevel, Discontinued) " +
+                "VALUES (?, NULL, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DataManager.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, productName);
+            preparedStatement.setObject(2, categoryId); // Allows null for CategoryID
+            preparedStatement.setString(3, quantityPerUnit);
+            preparedStatement.setObject(4, unitPrice); // Allows null for UnitPrice
+            preparedStatement.setObject(5, unitsInStock); // Allows null for UnitsInStock
+            preparedStatement.setObject(6, unitsOnOrder); // Allows null for UnitsOnOrder
+            preparedStatement.setObject(7, reorderLevel); // Allows null for ReorderLevel
+            preparedStatement.setBoolean(8, discontinued);
+
+            int rowsInserted = preparedStatement.executeUpdate();
+            if (rowsInserted == 0) {
+                System.out.println("Failed to insert the product.");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void updateProduct(int productId, int stock) {
         String query = "UPDATE products SET UnitsInStock = ? WHERE ProductID = ?";
 

@@ -21,16 +21,18 @@ public class ProductsScreen implements ScreenState {
     public ScreenState handleInput(Scanner scanner, NorthwindDao dao) {
         System.out.println("""
                 What would you like to do?
-                \t1) Delete a product
-                \t2) Update a product
-                \t3) Return to Home Screen
+                \t1) Create a product
+                \t2) Delete a product
+                \t3) Update a product
+                \t4) Return to Home Screen
                 Select an option:""");
         String input = scanner.nextLine();
 
         return switch (input) {
-            case "1" -> new DeleteProductScreen();
-            case "2" -> new UpdateProductScreen();
-            case "3" -> new HomeScreen();
+            case "1" -> new CreateProductScreen();
+            case "2" -> new DeleteProductScreen();
+            case "3" -> new UpdateProductScreen();
+            case "4" -> new HomeScreen();
             default -> {
                 System.out.println("Invalid input. Try again.");
                 yield this;
