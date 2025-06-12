@@ -17,7 +17,7 @@ public class HomeScreen implements ScreenState {
     }
 
     @Override
-    public ScreenState handleInput(Scanner scanner) {
+    public ScreenState handleInput(Scanner scanner, NorthwindDao dao) {
         String input = scanner.nextLine();
         return switch (input) {
             case "1" -> new ProductsScreen();

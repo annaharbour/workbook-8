@@ -5,5 +5,5 @@ import java.util.Scanner;
 
 public interface ScreenState {
     void display(NorthwindDao dao);
-    ScreenState handleInput(Scanner scanner);
+    ScreenState handleInput(Scanner scanner, NorthwindDao dao);
 }

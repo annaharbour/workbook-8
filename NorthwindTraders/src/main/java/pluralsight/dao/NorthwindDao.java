@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NorthwindDao {
-    public List<Product> getAllProducts(String categoryId) throws SQLException {
+    public List<Product> getAllProducts(String categoryId) {
         List<Product> products = new ArrayList<>();
         String query = categoryId == null ? "SELECT * FROM products" : "SELECT * FROM products WHERE CategoryID = ?";
 
-        try (Connection conn = NorthwindConfig.getConnection();
+        try (Connection conn = DataManager.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             if (categoryId != null) {
                 preparedStatement.setInt(1, Integer.parseInt(categoryId));
@@ -37,11 +37,68 @@ public class NorthwindDao {
         return products;
     }
 
-    public List<Customer> getAllCustomers() throws SQLException {
+    public void updateProduct(int productId, int stock) {
+        String query = "UPDATE products SET UnitsInStock = ? WHERE ProductID = ?";
+
+        try (Connection conn = DataManager.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, stock);
+            preparedStatement.setInt(2, productId);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+            if (rowsUpdated == 0) {
+                System.out.println("No product found with ID: " + productId);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void deleteProduct(int productId) {
+        String query = "DELETE FROM products WHERE ProductID = ?";
+        try (Connection conn = DataManager.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, productId);
+
+            int rowsDeleted = preparedStatement.executeUpdate();
+            if (rowsDeleted == 0) {
+                System.out.println("No product found with ID: " + productId);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public List<Product> searchProductsByCategory(int categoryId) {
+        List<Product> products = new ArrayList<>();
+        String query = "SELECT * FROM products WHERE products.CategoryId = ?";
+
+        try (Connection conn = DataManager.getConnection();
+             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setInt(1, categoryId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = Integer.parseInt(resultSet.getString("ProductID"));
+                    String name = resultSet.getString("ProductName");
+                    double price = resultSet.getDouble("UnitPrice");
+                    int stock = resultSet.getInt("UnitsInStock");
+
+                    products.add(new Product(id, name, price, stock));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return products;
+    }
+
+
+    public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
         String query = "SELECT * FROM customers";
 
-        try (Connection conn = NorthwindConfig.getConnection();
+        try (Connection conn = DataManager.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -60,11 +117,11 @@ public class NorthwindDao {
         return customers;
     }
 
-    public List<Category> getAllCategories() throws SQLException {
+    public List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT * FROM categories";
 
-        try (Connection conn = NorthwindConfig.getConnection();
+        try (Connection conn = DataManager.getConnection();
              PreparedStatement preparedStatement = conn.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -81,27 +138,5 @@ public class NorthwindDao {
         return categories;
     }
 
-    public List<Product> getCategoryProducts(int categoryId) throws SQLException {
-        List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM products WHERE products.CategoryId = ?";
-
-        try (Connection conn = NorthwindConfig.getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setInt(1, categoryId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    int id = Integer.parseInt(resultSet.getString("ProductID"));
-                    String name = resultSet.getString("ProductName");
-                    double price = resultSet.getDouble("UnitPrice");
-                    int stock = resultSet.getInt("UnitsInStock");
-
-                    products.add(new Product(id, name, price, stock));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());        }
-
-        return products;
-    }
 
 }

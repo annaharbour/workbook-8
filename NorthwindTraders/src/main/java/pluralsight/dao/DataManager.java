@@ -6,7 +6,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class NorthwindConfig {
+public class DataManager {
     private static final BasicDataSource dataSource = new BasicDataSource();
 
     public static Connection getConnection() throws SQLException {
